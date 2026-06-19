@@ -1,0 +1,158 @@
+---
+title: "Question 1: Coffee Hub"
+subtitle: "Data Science Practical Project 2026"
+author: "Student Number: 31074774"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+# Overview
+
+This project analyses a database of coffee roasters and expert coffee reviews for a prospective coffee entrepreneur looking to stock premium coffees in the Neelsie.
+
+The aim is to identify coffee origins, roasters and roast types that offer a strong combination of quality, cost-efficiency and appeal to Stellenbosch students.
+
+The analysis uses expert ratings, cost per 100g, review descriptions, origin information and roast strength. A simple student preference score is created from words commonly associated with student coffee preferences.
+
+# Data
+
+The project uses the supplied Coffee dataset:
+
+- `Coffee.csv`
+
+The dataset contains information on:
+
+- coffee name
+- roaster
+- roaster location
+- coffee origin
+- roast strength
+- expert rating
+- cost per 100g
+- three review description fields
+
+The three review descriptions are combined into a single `Review` column. A `StudentMatch` score is then calculated by counting student-friendly flavour words in the review text. A `ValueScore` is also calculated as rating divided by cost per 100g.
+
+# Data Preparation
+
+The first script loads the required packages and reads the coffee data.
+
+The data preparation includes:
+
+- loading the coffee data
+- combining the three description columns
+- converting review text to lower case
+- defining student-friendly taste words
+- calculating the `StudentMatch` score
+- calculating the `ValueScore`
+- combining origin variables where needed
+
+Functions and objects created:
+
+- `Coffee()`
+- `student_words`
+- `Review`
+- `StudentMatch`
+- `ValueScore`
+- `Origins`
+
+# Question 1: Coffee Origins
+
+This section investigates which origins provide the strongest combination of rating, cost and student appeal.
+
+The analysis reshapes the origin variables into a longer format so that coffees with more than one origin can be counted properly.
+
+Origins are summarised by:
+
+- average rating
+- average cost
+- average student match
+- number of coffees
+
+Only origins with a reasonable number of observations are considered, to avoid over-interpreting very small groups.
+
+The main figure is a bubble plot where:
+
+- the x-axis shows average cost per 100g
+- the y-axis shows average rating
+- bubble size shows the number of coffees
+- colour shows student match category
+
+This plot helps identify origins that are high quality, affordable and aligned with student preferences.
+
+# Question 2: Roaster Analysis
+
+This section evaluates which roasters may be attractive suppliers for the coffee entrepreneur.
+
+Roasters are summarised by:
+
+- average rating
+- average student match
+- average cost
+- number of coffees
+
+To avoid misleading results from very small samples, only roasters with at least five coffees are included in the main ranking.
+
+The roaster plot ranks the top roasters by average rating, while also showing student match and the number of coffees reviewed.
+
+This helps identify suppliers that are both high quality and sufficiently represented in the data.
+
+# Question 3: Roast Type Analysis
+
+This section examines whether certain roast strengths perform better than others.
+
+Roast types are ordered as:
+
+- Light
+- Medium-Light
+- Medium
+- Medium-Dark
+- Dark
+
+The roast analysis compares:
+
+- average rating
+- average student match
+- average cost
+
+The roast performance plot uses:
+
+- bar height for average rating
+- fill colour for student match
+- a line for average cost per 100g
+
+This allows roast styles to be compared across quality, price and likely student appeal in one compact figure.
+
+# Reproducibility
+
+The analysis can be reproduced by sourcing the scripts in order:
+
+```{r, eval = FALSE}
+source("code/01_Data_Reading_Cleaning.R")
+source("code/02_Country_Origin_Analysis.R")
+source("code/03_Roaster_Analysis.R")
+source("code/04_Roast_Analysis.R")
+```
+
+# Packages Used
+
+- tidyverse
+- dplyr
+- stringr
+- ggplot2
+- ggrepel
+- scales
+
+# Summary
+
+This project provides a practical recommendation framework for the Coffee Hub client.
+
+The analysis combines expert coffee ratings, cost information and review text to identify:
+
+- promising coffee origins
+- attractive roasters
+- roast styles that balance rating, cost and student appeal
+
+The final slides should focus on clear recommendations for what the entrepreneur should stock locally, with emphasis on coffees that are high quality, reasonably priced and likely to appeal to Stellenbosch students.

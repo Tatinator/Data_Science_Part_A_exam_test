@@ -1,0 +1,288 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing AT ALL.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "Report Loans and credit"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Tatjana Ebert"  # First Author - note the thanks message displayed as an italic footnote of first page.
+#Ref1: "Some Institution, Cape Town, South Africa" # First Author's Affiliation
+#Email1: "nfkatzke\\@gmail.com" # First Author's Email address
+
+#Author2: "John Smith"
+#Ref2: "Some other Institution, Cape Town, South Africa"
+#Email2: "John\\@gmail.com"
+#CommonAffiliation_12: TRUE # If Author 1 and 2 have a common affiliation. Works with _13, _23, etc.
+
+#Author3: "John Doe"
+#Email3: "Joe\\@gmail.com"
+
+#CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+#keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+#Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+#abstract: |
+#  Abstract to be written here. The abstract should not be too long and should provide the reader with a good understanding what you are writing about. Academic papers are not like novels where you keep the reader in suspense. To be effective in getting others to read your paper, be as open and concise about your findings here as possible. Ideally, upon reading your abstract, the reader should feel he / she must read your paper in entirety.
+---
+
+<!-- First: Set your default preferences for chunk options: -->
+
+<!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+# Note: Include = FALSE implies the code is executed, but not printed in your pdf.
+# warning and message = FALSE implies ugly messages and warnings are removed from your pdf.
+# These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
+
+# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+Example_data <- Texevier::Ex_Dat
+
+# Notice that as you are working in a .Rproj file (I am assuming you are) - the relative paths of your directories start at your specified root.
+# This means that when working in a .Rproj file, you never need to use getwd() - it is assumed as your base root automatically.
+#write_rds(Example_data, path = "data/Example_data.rds")
+
+```
+
+<!-- ############################## -->
+
+<!-- # Start Writing here: -->
+
+<!-- ############################## -->
+
+```{r netflix_setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  fig.pos = "H"
+)
+
+library(tidyverse)
+library(knitr)
+
+graph_path <- "C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_4_Netflix/graphs"
+
+include_plot <- function(name, caption){
+  knitr::include_graphics(file.path(graph_path, paste0(name, ".png")))
+}
+```
+
+# Netflix Content Strategy Analysis
+
+## Introduction
+
+Netflix has recently faced pressure from declining subscriber growth and a sharp fall in its share price. In this context, understanding what types of content perform well on streaming platforms is important for investors considering the launch of a competing service.
+
+This report uses the Netflix IMDb title data provided up to 2023, with the movie analysis restricted to titles released up to 2022. The focus is on identifying patterns in movie origin, genre, IMDb ratings, runtime, and textual descriptions. Where useful, HBO data is used as a benchmark to compare content strategy across platforms.
+
+## Data and Methodology
+
+The analysis uses the Netflix titles, credits and movie information datasets supplied for the question. The data contains information on title type, production country, genre, IMDb rating, runtime, description and credits. The analysis focuses on movies, as requested in the brief.
+
+The following methods are used:
+
+* Frequency analysis to identify dominant countries and genres.
+* Boxplots and summary tables to compare IMDb ratings and runtime by country.
+* Textual analysis of descriptions using word frequencies and TF-IDF to identify distinctive country-specific themes.
+* Platform comparison using HBO data where relevant.
+
+## Country Representation
+
+```{r country_rep, out.width="90%", fig.cap="Country representation of Netflix movies. \\label{fig:country_rep}"}
+include_plot("country_rep", "Country representation of Netflix movies.")
+```
+
+Figure \ref{fig:country_rep} shows that Netflix's movie catalogue is heavily concentrated in a small number of production markets. The United States is the dominant contributor, followed by other large film-producing countries such as India and the United Kingdom.
+
+This suggests that Netflix relies strongly on countries with established film industries and large domestic audiences. For a new streaming platform, this implies that catalogue scale is likely to depend on securing content from major global production hubs rather than attempting to build all content internally.
+
+```{r countries, out.width="90%", fig.cap="Top countries by number of Netflix movies. \\label{fig:countries}"}
+include_plot("countries", "Top countries by number of Netflix movies.")
+```
+
+Figure \ref{fig:countries} confirms that Netflix's content supply is not evenly distributed across countries. A few countries account for a large share of available movies, while many other countries are represented by far fewer titles.
+
+## IMDb Ratings by Country
+
+```{r rating_country, out.width="90%", fig.cap="IMDb rating distribution by production country. \\label{fig:rating_country}"}
+include_plot("Rating_by_country", "IMDb rating distribution by production country.")
+```
+
+Figure \ref{fig:rating_country} compares IMDb ratings across the major production countries. The results show that countries with the largest number of titles do not necessarily have the highest median ratings. This is important because it indicates that catalogue size and content quality are not the same strategic objective.
+
+For investors, the implication is that a streaming service should not only compete on volume. Smaller but higher-quality international catalogues may provide stronger audience satisfaction and differentiation.
+
+## Runtime Analysis
+
+```{r runtime, out.width="90%", fig.cap="Distribution of Netflix movie runtime. \\label{fig:runtime}"}
+include_plot("runtime", "Distribution of Netflix movie runtime.")
+```
+
+Figure \ref{fig:runtime} shows that Netflix movies are mostly concentrated around the standard feature-film length of roughly 90 to 120 minutes. This suggests that, despite the flexibility of streaming platforms, movie runtimes still follow traditional viewing preferences.
+
+```{r runtime_country, out.width="90%", fig.cap="Netflix movie runtime by country. \\label{fig:runtime_country}"}
+include_plot("runtime_by_countries", "Netflix movie runtime by country.")
+```
+
+Figure \ref{fig:runtime_country} shows that runtime differs by production country. These differences may reflect local storytelling traditions, audience expectations and industry norms.
+
+```{r corr_runtime_rating, out.width="90%", fig.cap="Relationship between runtime and IMDb rating. \\label{fig:corr_runtime_rating}"}
+include_plot("Correlation_Runtime_Rating", "Relationship between runtime and IMDb rating.")
+```
+
+Figure \ref{fig:corr_runtime_rating} indicates that the relationship between runtime and IMDb rating is weak. Longer movies are not automatically better rated. From a strategic perspective, this suggests that investing in longer productions does not necessarily improve audience reception.
+
+## Genre Analysis
+
+```{r genres, out.width="90%", fig.cap="Most common Netflix movie genres. \\label{fig:genres}"}
+include_plot("genres", "Most common Netflix movie genres.")
+```
+
+Figure \ref{fig:genres} shows that Netflix's movie catalogue is dominated by broad mainstream genres such as drama, comedy and action. These genres are likely used because they appeal to wide audiences and are suitable for global distribution.
+
+```{r genres_high, out.width="90%", fig.cap="Highest-rated Netflix movie genres. \\label{fig:genres_high}"}
+include_plot("Genres_high", "Highest-rated Netflix movie genres.")
+```
+
+Figure \ref{fig:genres_high} shows that the most common genres are not always the highest rated. This suggests that niche or less frequent genres may offer stronger audience satisfaction. A new streaming platform may therefore benefit from targeted investment in high-quality niche genres rather than simply copying Netflix's high-volume genre strategy.
+
+## Textual Analysis of Movie Descriptions
+
+```{r wordcloud, out.width="80%", fig.cap="Most common words in Netflix movie descriptions. \\label{fig:wordcloud}"}
+include_plot("wordcloud", "Most common words in Netflix movie descriptions.")
+```
+
+Figure \ref{fig:wordcloud} summarises the most frequent words in Netflix movie descriptions. The dominant words suggest that Netflix movies often focus on broad and relatable themes such as family, love, life, relationships, crime and personal conflict.
+
+```{r words_country, out.width="95%", fig.cap="Distinctive words in movie descriptions by country. \\label{fig:words_country}"}
+include_plot("words_by_country", "Distinctive words in movie descriptions by country.")
+```
+
+Figure \ref{fig:words_country} provides a more informative country-specific view using TF-IDF. This shows which words are especially distinctive for selected countries. The results indicate that countries differ not only in the number of movies they produce, but also in the type of stories they contribute.
+
+This is particularly relevant for the task, since it shows that movie preferences and themes vary across countries. A successful streaming strategy should therefore consider regional storytelling preferences instead of relying on a single global content formula.
+
+## Director Analysis
+
+```{r directors, out.width="90%", fig.cap="Most common directors represented in the Netflix movie catalogue. \\label{fig:directors}"}
+include_plot("directors", "Most common directors represented in the Netflix movie catalogue.")
+```
+
+Figure \ref{fig:directors} shows the directors most frequently represented in the Netflix movie catalogue. While this is less central than country, genre and rating analysis, it provides evidence of Netflix's reliance on repeat contributors. This may reflect long-term production relationships or the acquisition of multiple films from the same creators.
+
+## Netflix and HBO Comparison
+
+```{r hbo_genre, out.width="90%", fig.cap="Average IMDb ratings by genre: Netflix versus HBO. \\label{fig:hbo_genre}"}
+include_plot("HBO_genre", "Average IMDb ratings by genre: Netflix versus HBO.")
+```
+
+Figure \ref{fig:hbo_genre} compares average IMDb ratings by genre between Netflix and HBO. The comparison highlights differences in platform strategy. Netflix appears to focus more on catalogue breadth, while HBO is often associated with a more selective and prestige-oriented catalogue.
+
+```{r hbo_rating, out.width="90%", fig.cap="Average IMDb rating comparison between Netflix and HBO. \\label{fig:hbo_rating}"}
+include_plot("HBO_rating", "Average IMDb rating comparison between Netflix and HBO.")
+```
+
+Figure \ref{fig:hbo_rating} reinforces this difference. If HBO achieves higher average ratings in certain categories, this suggests that a smaller but more carefully curated catalogue can compete against a larger content library.
+
+## Strategic Implications
+
+The analysis provides several useful insights for investors considering a new streaming service.
+
+First, Netflix's catalogue is strongly concentrated in major production countries. This means that market entry would likely require partnerships with established content-producing regions.
+
+Second, high catalogue volume does not guarantee high IMDb ratings. A new platform should therefore avoid competing only on quantity and should instead identify high-performing regions and genres.
+
+Third, runtime is not strongly related to rating. This suggests that content quality, genre and story appeal matter more than movie length.
+
+Fourth, textual analysis shows that movie themes differ across countries. Regional content strategies may therefore be important for international growth.
+
+Finally, the HBO comparison suggests that a smaller, more curated catalogue may be a viable alternative to Netflix's scale-based model.
+
+## Conclusion
+
+The Netflix data suggests that successful streaming content strategy depends on more than catalogue size. The strongest investment case lies in balancing international diversity, high-quality genres, regional storytelling preferences and careful content curation.
+
+For a new streaming service, the key lesson is not to replicate Netflix's scale immediately. Instead, investors should consider a focused strategy built around high-rated genres, distinctive international content and regionally relevant themes.
+
+```
+```
+
+
+<!-- Make title of bibliography here: -->
+<!-- \newpage -->
+
+\newpage

@@ -1,0 +1,127 @@
+---
+title: "Question 2: Baby Names"
+subtitle: "Data Science Practical Project 2026"
+author: "Student Number: 31074774"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+# Overview
+
+This project investigates baby naming trends in the United States and provides recommendations to a New York toy design company seeking suitable names for a new toy line.
+
+The analysis explores whether popular names persist through time, whether sudden naming spikes can be linked to popular culture, and which names are likely to remain relevant in the future.
+
+Data from the US Social Security Administration is combined with Billboard music charts and HBO production data to investigate possible cultural influences on naming behaviour.
+
+# Data
+
+The project uses four datasets:
+
+- US Baby Names by State
+- Billboard Top 100 Charts
+- HBO Titles
+- HBO Credits
+
+The HBO credits dataset required additional character encoding cleaning before analysis.
+
+# Question 1: Do Popular Names Persist?
+
+To investigate whether popular names remain popular through time, national baby-name counts are aggregated by year, gender and name. The top 25 names are identified for every year and Spearman rank correlations are calculated between rankings one, two and three years into the future.
+
+The analysis also compares persistence before and after 1990 to determine whether naming trends have become less stable in more recent decades.
+
+Functions used:
+
+- `Persistence_Before_After_Table()`
+- `Persistence_Before_After_Plot()`
+
+# Question 2: Name Spikes
+
+Names occasionally experience sudden increases in popularity.
+
+To identify these events, year-on-year growth rates and absolute changes are calculated for each name and gender combination. Both relative and absolute spikes are investigated because they capture different aspects of naming behaviour.
+
+Functions used:
+
+- `Top_Relative_Spikes()`
+- `Top_Absolute_Spikes()`
+- `Relative_Spike_Plot()`
+- `Absolute_Spike_Plot()`
+- `Selected_Name_Plot()`
+
+Special attention is given to examples such as Whitney to determine whether popularity increases occurred as sudden shocks or gradual cultural trends.
+
+# Question 3: Popular Culture and Naming Trends
+
+One possible explanation for naming spikes is exposure through entertainment and media.
+
+First names are extracted from HBO actor names, HBO character names and Billboard artists. These names are then matched against the largest naming spikes to identify possible links between popular culture and baby naming behaviour.
+
+Functions used:
+
+- `Actor_Matches()`
+- `Character_Matches()`
+- `Billboard_Artist_Matches()`
+
+The analysis is exploratory and intended to identify interesting patterns rather than establish causal relationships.
+
+# Question 4: Long-Term Naming Trends
+
+To understand how naming preferences evolved over time, the most popular names of each decade are identified and visualised. Decade-level summaries provide a broader perspective than year-to-year fluctuations and reveal how naming fashions change across generations.
+
+Functions used:
+
+- `Top_Decade_Names()`
+- `Top_Decade_Names_Plot()`
+- `Decade_Heatmap_Plot()`
+
+# Question 5: Toy Name Recommendations for New York
+
+The final task focuses on selecting suitable names for a new toy brand in New York.
+
+A custom Toy Name Score is constructed using:
+
+- Long-term stability
+- Overall popularity
+- Volatility penalties
+
+Names with strong historical popularity and low fad risk receive higher scores. A separate Fad Risk measure identifies names that may be highly fashionable but potentially short-lived.
+
+Functions used:
+
+- `Toy_Name_Scores_NY()`
+- `Toy_Name_Score_Plot()`
+- `Fad_Names_NY()`
+- `Fad_Risk_Plot_NY()`
+
+# Reproducibility
+
+The analysis can be reproduced by sourcing the scripts in order:
+
+```{r, eval = FALSE}
+source("code/01_Data_Reading_Cleaning.R")
+source("code/02_Persistence_Analysis.R")
+source("code/03_Spike_Analysis.R")
+source("code/04_Media_Matching.R")
+source("code/05_Decade_Analysis.R")
+source("code/06_NY_Toy_Name_Analysis.R")
+```
+
+Alternatively, all outputs can be generated through a master script that sources each component and executes the analysis pipeline.
+
+# Packages Used
+
+- tidyverse
+- stringr
+- purrr
+- ggplot2
+- scales
+
+# Summary
+
+The results suggest that popular names exhibit varying degrees of persistence through time, that some naming spikes coincide with prominent cultural influences, and that certain names display substantially lower fad risk than others.
+
+The final recommendations focus on names that balance popularity, recognisability and long-term stability, making them attractive candidates for toy branding in the New York market.

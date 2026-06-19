@@ -1,0 +1,189 @@
+---
+title: "Question 4: Netflix"
+subtitle: "Data Science Practical Project 2026"
+author: "Student Number: 31074774"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    theme: readable
+---
+
+# Overview
+
+This project investigates the composition of Netflix's movie catalogue and explores differences in content strategy across countries, genres, directors and streaming platforms. Particular attention is given to IMDb ratings, runtime distributions, textual characteristics of movie descriptions and comparisons between Netflix and HBO.
+
+The analysis follows a functional programming approach throughout. Each section of the analysis is contained in its own script and implemented through reusable functions. This improves reproducibility, readability and allows figures and tables to be generated independently.
+
+# Folder Structure
+
+```{r, eval = FALSE}
+Question_4_Netflix
+
+├── code
+│   ├── 01_Data_Reading_Cleaning.R
+│   ├── 02_Country_Analysis.R
+│   ├── 03_Runtime_Analysis.R
+│   ├── 04_Genre_Analysis.R
+│   ├── 05_Text_Analysis.R
+│   ├── 06_Director_Analysis.R
+│   └── 07_HBO_Comparison.R
+│
+├── report
+│   └── Netflix_Report.Rmd
+│
+├── figures
+│
+└── README.Rmd
+```
+
+# Data Preparation
+
+The first script loads all required packages and reads the Netflix and HBO datasets.
+
+Data cleaning includes:
+
+- Restricting Netflix titles to movies only.
+- Restricting analysis to titles released up to 2022.
+- Cleaning genre and country fields.
+- Expanding countries and genres into separate observations using `separate_rows()`.
+
+The following helper functions are created:
+
+- `Netflix_Country()`
+- `Netflix_Genre()`
+- `HBO_Country()`
+- `HBO_Genre()`
+
+These functions create country-level and genre-level datasets used throughout the project.
+
+# Country Analysis
+
+The country analysis focuses on the geographical composition of the Netflix catalogue.
+
+Functions:
+
+- `Country_Count_Plot()`
+- `Country_Rating_Plot()`
+- `Country_Rating_Table()`
+
+The objective is to:
+
+- Identify the countries most represented on Netflix.
+- Compare IMDb ratings across countries.
+- Summarise average and median ratings for leading production countries.
+
+# Runtime Analysis
+
+This section investigates movie length and its relationship with audience ratings.
+
+Functions:
+
+- `Runtime_Distribution_Plot()`
+- `Country_Runtime_Plot()`
+- `Runtime_Country_Table()`
+- `Runtime_Rating_Plot()`
+- `Runtime_Correlation()`
+
+The analysis considers:
+
+- Distribution of movie runtimes.
+- Differences in runtime across countries.
+- Relationship between runtime and IMDb score.
+
+# Genre Analysis
+
+Genre analysis evaluates the breadth and quality of Netflix's catalogue.
+
+Functions:
+
+- `Genre_Count_Plot()`
+- `Genre_Rating_Table()`
+- `Genre_Rating_Plot()`
+
+This section:
+
+- Identifies the most common genres.
+- Compares IMDb ratings across genres.
+- Highlights the highest-rated categories after controlling for minimum sample sizes.
+
+# Text Analysis
+
+Movie descriptions are analysed using natural language processing techniques.
+
+Functions:
+
+- `Description_Words()`
+- `Word_Count_Table()`
+- `Description_Wordcloud()`
+- `Country_TFIDF_Table()`
+- `Country_TFIDF_Plot()`
+
+The objective is to:
+
+- Identify common themes across Netflix movies.
+- Explore distinctive vocabulary used by different production countries.
+- Compare country-specific storytelling characteristics using TF-IDF measures.
+
+# Director Analysis
+
+This section evaluates the role of directors within the Netflix catalogue.
+
+Functions:
+
+- `Director_Data()`
+- `Top_Directors_Plot()`
+- `Director_Rating_Table()`
+
+The analysis focuses on:
+
+- Directors with the largest catalogue presence.
+- Average IMDb ratings of directors with multiple movies available on Netflix.
+
+# HBO Comparison
+
+The final section compares Netflix and HBO content strategies.
+
+Functions:
+
+- `Platform_Genre_Comparison_Table()`
+- `Platform_Genre_Comparison_Plot()`
+- `Platform_Type_Summary()`
+- `Platform_Type_Plot()`
+- `Platform_Country_Comparison_Plot()`
+
+The comparison evaluates:
+
+- Rating differences across common genres.
+- Relative catalogue size.
+- Content type strategies.
+- Country representation across platforms.
+
+# Reproducibility
+
+All analysis can be reproduced by sourcing the scripts in sequence:
+
+```{r, eval = FALSE}
+source("code/01_Data_Reading_Cleaning.R")
+source("code/02_Country_Analysis.R")
+source("code/03_Runtime_Analysis.R")
+source("code/04_Genre_Analysis.R")
+source("code/05_Text_Analysis.R")
+source("code/06_Director_Analysis.R")
+source("code/07_HBO_Comparison.R")
+```
+
+The report then calls the relevant functions to generate figures and tables.
+
+# Packages Used
+
+- tidyverse
+- tidytext
+- stringr
+- scales
+- wordcloud
+- RColorBrewer
+
+# Summary
+
+The project investigates what types of movies appear on Netflix, which countries contribute most content, how ratings differ across genres and regions, and how Netflix compares to HBO in terms of catalogue composition and content quality. The analysis combines descriptive statistics, visualisation and text mining techniques to provide a concise overview of streaming content patterns.
