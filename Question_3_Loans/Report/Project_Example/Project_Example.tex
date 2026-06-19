@@ -1,0 +1,677 @@
+\documentclass[11pt,preprint]{elsarticle}
+
+\usepackage{lmodern}
+%%%% My spacing
+\usepackage{setspace}
+\setstretch{1.2}
+\DeclareMathSizes{12}{14}{10}{10}
+
+% Wrap around which gives all figures included the [H] command, or places it "here". This can be tedious to code in Rmarkdown.
+\usepackage{float}
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}
+
+\let\origtable\table
+\let\endorigtable\endtable
+\renewenvironment{table}[1][2] {
+    \expandafter\origtable\expandafter[H]
+} {
+    \endorigtable
+}
+
+
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+
+\usepackage{amssymb, amsmath, amsthm, amsfonts}
+
+\def\bibsection{\section*{References}} %%% Make "References" appear before bibliography
+
+
+\usepackage[numbers]{natbib}
+
+\usepackage{longtable}
+\usepackage[margin=2.3cm,bottom=2cm,top=2.5cm, includefoot]{geometry}
+\usepackage{fancyhdr}
+\usepackage[bottom, hang, flushmargin]{footmisc}
+\usepackage{graphicx}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1.3ex plus 0.5ex minus 0.3ex}
+\usepackage{textcomp}
+\renewcommand{\headrulewidth}{0.2pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\usepackage{array}
+\newcolumntype{x}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
+
+%%%%  Remove the "preprint submitted to" part. Don't worry about this either, it just looks better without it:
+\makeatletter
+\def\ps@pprintTitle{%
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \let\@oddfoot\@empty
+  \let\@evenfoot\@oddfoot
+}
+\makeatother
+
+ \def\tightlist{} % This allows for subbullets!
+
+\usepackage{hyperref}
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=blue,
+            pdfborder={0 0 0}}
+
+
+% The following packages allow huxtable to work:
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{calc}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{caption}
+
+
+\newenvironment{columns}[1][]{}{}
+
+\newenvironment{column}[1]{\begin{minipage}{#1}\ignorespaces}{%
+\end{minipage}
+\ifhmode\unskip\fi
+\aftergroup\useignorespacesandallpars}
+
+\def\useignorespacesandallpars#1\ignorespaces\fi{%
+#1\fi\ignorespacesandallpars}
+
+\makeatletter
+\def\ignorespacesandallpars{%
+  \@ifnextchar\par
+    {\expandafter\ignorespacesandallpars\@gobble}%
+    {}%
+}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+\href{\#cite.\detokenize{#1}}{#2}\nocite{#1}}
+
+\makeatletter
+% allow citations to break across lines
+\let\@cite@ofmt\@firstofone
+% avoid brackets around text for \cite:
+\def\@biblabel#1{}
+\def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+{\begin{list}{}{%
+	\setlength{\itemindent}{0pt}
+	\setlength{\leftmargin}{0pt}
+	\setlength{\parsep}{0pt}
+	% turn on hanging indent if param 1 is 1
+	\ifodd #1
+	\setlength{\leftmargin}{\cslhangindent}
+	\setlength{\itemindent}{-1\cslhangindent}
+	\fi
+	% set entry spacing
+	\setlength{\itemsep}{#2\baselineskip}}}
+{\end{list}}
+
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+%%% Include extra packages specified by user
+
+%%% Hard setting column skips for reports - this ensures greater consistency and control over the length settings in the document.
+%% page layout
+%% paragraphs
+\setlength{\baselineskip}{12pt plus 0pt minus 0pt}
+\setlength{\parskip}{12pt plus 0pt minus 0pt}
+\setlength{\parindent}{0pt plus 0pt minus 0pt}
+%% floats
+\setlength{\floatsep}{12pt plus 0 pt minus 0pt}
+\setlength{\textfloatsep}{20pt plus 0pt minus 0pt}
+\setlength{\intextsep}{14pt plus 0pt minus 0pt}
+\setlength{\dbltextfloatsep}{20pt plus 0pt minus 0pt}
+\setlength{\dblfloatsep}{14pt plus 0pt minus 0pt}
+%% maths
+\setlength{\abovedisplayskip}{12pt plus 0pt minus 0pt}
+\setlength{\belowdisplayskip}{12pt plus 0pt minus 0pt}
+%% lists
+\setlength{\topsep}{10pt plus 0pt minus 0pt}
+\setlength{\partopsep}{3pt plus 0pt minus 0pt}
+\setlength{\itemsep}{5pt plus 0pt minus 0pt}
+\setlength{\labelsep}{8mm plus 0mm minus 0mm}
+\setlength{\parsep}{\the\parskip}
+\setlength{\listparindent}{\the\parindent}
+%% verbatim
+\setlength{\fboxsep}{5pt plus 0pt minus 0pt}
+
+
+
+\begin{document}
+
+
+
+\begin{frontmatter}  %
+
+\title{Report Loans and credit}
+
+% Set to FALSE if wanting to remove title (for submission)
+
+
+
+
+\author[Add1]{Tatjana Ebert}
+\ead{}
+
+
+
+
+
+
+
+
+\vspace{1cm}
+
+
+
+
+
+\vspace{0.5cm}
+
+\end{frontmatter}
+
+\setcounter{footnote}{0}
+
+
+
+%________________________
+% Header and Footers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\chead{}
+\rhead{}
+\lfoot{}
+\rfoot{\footnotesize Page \thepage}
+\lhead{}
+%\rfoot{\footnotesize Page \thepage } % "e.g. Page 2"
+\cfoot{}
+
+%\setlength\headheight{30pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%________________________
+
+\headsep 35pt % So that header does not go over title
+
+
+
+
+\section{Introduction}\label{introduction}
+
+This report analyses household loan default patterns using anonymised
+Lending Club data. The objective is to identify key predictors of loan
+default, evaluate Lending Club's grading system, assess whether Texas
+differs from other US states, and test the Director's existing
+assumptions about default risk.
+
+The main outcome variable is based on \texttt{loan\_status}. Loans
+classified as \texttt{Fully\ Paid} are treated as successful repayments,
+while loans classified as \texttt{Charged\ Off} or \texttt{Default} are
+treated as written off as a loss. Loans listed as \texttt{Current} are
+excluded from the main default analysis because their final outcome is
+not yet known.
+
+\section{Data and Cleaning}\label{data-and-cleaning}
+
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1912}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1912}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2353}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2647}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1176}}@{}}
+\caption{Summary statistics for cleaned Lending Club
+data}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+observations
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+default\_rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+avg\_loan\_amount
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+avg\_interest\_rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+avg\_dti
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+observations
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+default\_rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+avg\_loan\_amount
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+avg\_interest\_rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+avg\_dti
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+383202 & 0.225 & 14544.93 & 13.024 & 18.792 \\
+\end{longtable}
+
+\section{Exploratory Analysis}\label{exploratory-analysis}
+
+Default rates differ substantially across borrower characteristics. The
+first important comparison is by credit grade.
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Default rates by Lending Club credit grade}\tabularnewline
+\toprule\noalign{}
+grade & default\_rate & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+grade & default\_rate & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+A & 0.069 & 66886 \\
+B & 0.156 & 114785 \\
+C & 0.253 & 111454 \\
+D & 0.346 & 54883 \\
+E & 0.431 & 24302 \\
+F & 0.524 & 8567 \\
+G & 0.573 & 2325 \\
+\end{longtable}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_3_Loans/graphs/Grade.png}
+\caption{Default rates by credit grade}
+\end{figure}
+
+Debt-to-income ratios are also central to the analysis because they
+measure the borrower's repayment burden relative to income.
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Default rates by DTI band}\tabularnewline
+\toprule\noalign{}
+dti\_band & default\_rate & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+dti\_band & default\_rate & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+{[}0,5{]} & 0.169 & 19605 \\
+(5,10{]} & 0.167 & 48750 \\
+(10,15{]} & 0.186 & 74676 \\
+(15,20{]} & 0.212 & 79480 \\
+(20,25{]} & 0.241 & 67092 \\
+(25,30{]} & 0.279 & 49716 \\
+(30,35{]} & 0.316 & 30001 \\
+(35,40{]} & 0.321 & 10123 \\
+(40,45{]} & 0.340 & 1573 \\
+(45,50{]} & 0.356 & 947 \\
+(50,55{]} & 0.248 & 238 \\
+(55,60{]} & 0.226 & 199 \\
+\end{longtable}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_3_Loans/graphs/cap_dti.png}
+\caption{Default rates by DTI cap}
+\end{figure}
+
+\section{Testing the Institute's
+Heuristics}\label{testing-the-institutes-heuristics}
+
+\subsection{Homeowners and Long
+Employment}\label{homeowners-and-long-employment}
+
+The first belief is that homeowners and borrowers employed for more than
+ten years have a much lower default probability on short-term loans.
+Short-term loans are defined as 36-month loans.
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{Default rates for short-term loans by home ownership and
+employment length}\tabularnewline
+\toprule\noalign{}
+homeowner & emp\_10plus & default\_rate & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+homeowner & emp\_10plus & default\_rate & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 0 & 0.232 & 92813 \\
+0 & 1 & 0.230 & 28042 \\
+1 & 0 & 0.172 & 107966 \\
+1 & 1 & 0.146 & 68636 \\
+\end{longtable}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_3_Loans/graphs/homeowners.png}
+\caption{Short-term default rates by home ownership and employment length}
+\end{figure}
+
+```
+
+This comparison shows whether the Institute's belief is supported in the
+raw data. However, raw differences may be misleading because homeowners
+and long-employed borrowers may also differ in credit grade, income and
+DTI.
+
+\subsection{State Differences}\label{state-differences}
+
+The second belief is that US states differ significantly in their
+culture of defaulting on short-term loans. The table below compares
+state-level default rates among states with sufficient observations.
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Highest short-term default rates by state}\tabularnewline
+\toprule\noalign{}
+addr\_state & default\_rate & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+addr\_state & default\_rate & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+AR & 0.236 & 2198 \\
+MS & 0.228 & 1885 \\
+OK & 0.225 & 2748 \\
+LA & 0.225 & 3263 \\
+AL & 0.224 & 3579 \\
+NE & 0.222 & 1470 \\
+NY & 0.214 & 23664 \\
+FL & 0.211 & 22551 \\
+NV & 0.206 & 4803 \\
+NJ & 0.202 & 10246 \\
+HI & 0.201 & 1387 \\
+AK & 0.199 & 643 \\
+MO & 0.199 & 4617 \\
+MD & 0.198 & 6540 \\
+OH & 0.197 & 9675 \\
+\end{longtable}
+
+Texas is examined separately because the Director is based in Texas.
+
+\begin{longtable}[]{@{}rrr@{}}
+\caption{Default rate in Texas versus other states}\tabularnewline
+\toprule\noalign{}
+texas & default\_rate & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+texas & default\_rate & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 0.224 & 350819 \\
+1 & 0.228 & 32383 \\
+\end{longtable}
+
+\subsection{Age and Occupation}\label{age-and-occupation}
+
+The dataset does not contain a direct borrower age variable. Therefore,
+the claim that credit grades predict whether younger individuals default
+cannot be tested directly. Similarly, if occupation is absent from the
+dataset, interest-rate determination by occupation cannot be evaluated
+directly. This is an important data limitation.
+
+\section{Econometric Model}\label{econometric-model}
+
+A logistic regression is appropriate because the dependent variable is
+binary: default or no default.
+
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Logistic regression results for default
+probability}\tabularnewline
+\toprule\noalign{}
+term & estimate & odds\_ratio & p.value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+term & estimate & odds\_ratio & p.value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+(Intercept) & -3.287 & 0.037 & 0.000 \\
+gradeB & 0.637 & 1.891 & 0.000 \\
+gradeC & 1.011 & 2.749 & 0.000 \\
+gradeD & 1.226 & 3.409 & 0.000 \\
+gradeE & 1.340 & 3.818 & 0.000 \\
+gradeF & 1.513 & 4.541 & 0.000 \\
+gradeG & 1.573 & 4.820 & 0.000 \\
+term60 months & 0.407 & 1.503 & 0.000 \\
+int\_rate & 0.033 & 1.034 & 0.000 \\
+dti & 0.008 & 1.008 & 0.000 \\
+annual\_inc & 0.000 & 1.000 & 0.000 \\
+home\_ownershipMORTGAGE & -0.205 & 0.814 & 0.483 \\
+home\_ownershipOWN & 0.008 & 1.008 & 0.977 \\
+home\_ownershipRENT & 0.252 & 1.286 & 0.390 \\
+emp\_length1 year & 0.031 & 1.031 & 0.146 \\
+emp\_length10+ years & -0.044 & 0.957 & 0.007 \\
+emp\_length2 years & -0.005 & 0.995 & 0.808 \\
+emp\_length3 years & 0.017 & 1.018 & 0.392 \\
+emp\_length4 years & -0.001 & 0.999 & 0.974 \\
+emp\_length5 years & 0.011 & 1.011 & 0.629 \\
+emp\_length6 years & -0.046 & 0.955 & 0.061 \\
+emp\_length7 years & -0.015 & 0.986 & 0.585 \\
+emp\_length8 years & 0.011 & 1.011 & 0.651 \\
+emp\_length9 years & 0.007 & 1.007 & 0.781 \\
+emp\_lengthn/a & 0.462 & 1.587 & 0.000 \\
+purposecredit\_card & 0.205 & 1.227 & 0.000 \\
+purposedebt\_consolidation & 0.241 & 1.273 & 0.000 \\
+purposehome\_improvement & 0.272 & 1.313 & 0.000 \\
+purposehouse & 0.090 & 1.094 & 0.177 \\
+purposemajor\_purchase & 0.259 & 1.296 & 0.000 \\
+\end{longtable}
+
+The model estimates how borrower characteristics are associated with the
+probability of default. Coefficients above zero increase default risk,
+while coefficients below zero reduce default risk. Odds ratios above one
+indicate higher default odds.
+
+\section{Model Performance}\label{model-performance}
+
+\begin{longtable}[]{@{}r@{}}
+\caption{Model AUC}\tabularnewline
+\toprule\noalign{}
+AUC \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+AUC \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0.709 \\
+\end{longtable}
+
+The AUC measures the model's ability to distinguish between defaulted
+and fully paid loans. An AUC of 0.5 indicates no predictive power, while
+values closer to 1 indicate stronger classification performance.
+
+\section{DTI Hard-Cap Recommendation}\label{dti-hard-cap-recommendation}
+
+A hard cap on DTI can reduce risk by excluding borrowers whose debt
+burden is too high relative to income. The appropriate cap depends on
+the lender's default tolerance.
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{DTI bands and associated default rates}\tabularnewline
+\toprule\noalign{}
+dti\_band & default\_rate & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+dti\_band & default\_rate & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+{[}0,5{]} & 0.169 & 19605 \\
+(5,10{]} & 0.167 & 48750 \\
+(10,15{]} & 0.186 & 74676 \\
+(15,20{]} & 0.212 & 79480 \\
+(20,25{]} & 0.241 & 67092 \\
+(25,30{]} & 0.279 & 49716 \\
+(30,35{]} & 0.316 & 30001 \\
+(35,40{]} & 0.321 & 10123 \\
+(40,45{]} & 0.340 & 1573 \\
+(45,50{]} & 0.356 & 947 \\
+(50,55{]} & 0.248 & 238 \\
+(55,60{]} & 0.226 & 199 \\
+\end{longtable}
+
+Based on this table, a conservative lender should choose a lower DTI
+cap, while a lender with greater risk tolerance may accept higher DTI
+levels. A reasonable policy structure is:
+
+\begin{itemize}
+\tightlist
+\item
+  Low default tolerance: DTI cap around 20 to 25.
+\item
+  Moderate default tolerance: DTI cap around 30.
+\item
+  High default tolerance: DTI cap around 35 to 40.
+\end{itemize}
+
+The exact recommendation should be based on where the observed default
+rate begins to rise sharply in the DTI table and graph.
+
+\section{Texas Compared with Other
+States}\label{texas-compared-with-other-states}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Controlled regression test for Texas effect}\tabularnewline
+\toprule\noalign{}
+term & estimate & std.error & statistic & p.value & odds\_ratio \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+term & estimate & std.error & statistic & p.value & odds\_ratio \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+(Intercept) & -2.825 & 0.027 & -104.143 & 0.000 & 0.059 \\
+texas & 0.033 & 0.014 & 2.282 & 0.022 & 1.034 \\
+gradeB & 0.742 & 0.020 & 37.646 & 0.000 & 2.099 \\
+gradeC & 1.163 & 0.025 & 45.656 & 0.000 & 3.200 \\
+gradeD & 1.406 & 0.036 & 38.848 & 0.000 & 4.080 \\
+gradeE & 1.550 & 0.047 & 32.927 & 0.000 & 4.709 \\
+gradeF & 1.746 & 0.059 & 29.696 & 0.000 & 5.731 \\
+gradeG & 1.817 & 0.076 & 24.026 & 0.000 & 6.151 \\
+dti & 0.007 & 0.000 & 18.449 & 0.000 & 1.008 \\
+int\_rate & 0.035 & 0.003 & 12.621 & 0.000 & 1.036 \\
+term60 months & 0.292 & 0.010 & 30.014 & 0.000 & 1.339 \\
+annual\_inc & 0.000 & 0.000 & -19.307 & 0.000 & 1.000 \\
+\end{longtable}
+
+If the Texas coefficient is statistically significant after controlling
+for borrower risk characteristics, then Texas appears different from
+other states. If it is not significant, then any raw Texas difference is
+likely explained by borrower composition rather than a distinct default
+culture.
+
+\section{Discussion}\label{discussion}
+
+The key risk drivers expected from this analysis are credit grade,
+interest rate, DTI, loan term, annual income, delinquencies and recent
+credit inquiries. Borrowers with weaker credit grades, higher DTI,
+higher interest rates and longer loan terms are expected to show higher
+default probabilities.
+
+Lending Club's grading system is useful if default rates increase
+consistently from grade A to lower grades. However, the grading system
+should not be used alone. It should be combined with DTI, income, loan
+purpose, term and prior credit behaviour.
+
+\section{Conclusion}\label{conclusion}
+
+The analysis provides evidence on which borrower characteristics are
+most strongly associated with loan default. The most relevant risk
+indicators are expected to be credit grade, DTI, interest rate and loan
+term. A DTI cap can help reduce default risk, but the appropriate
+threshold depends on the lender's tolerance for defaults. Texas should
+be evaluated using both raw default rates and controlled regression
+results.
+
+The Institute's heuristics are only partly testable. The homeowner and
+employment-length claim can be tested among short-term loans. State
+differences can be examined both descriptively and with controls.
+However, the claim about younger borrowers cannot be tested directly
+because the dataset does not contain borrower age.
+
+\bibliography{Tex/ref}
+
+
+
+
+
+\end{document}

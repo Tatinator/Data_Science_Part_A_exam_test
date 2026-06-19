@@ -1,0 +1,392 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing AT ALL.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "Report Loans and credit"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Tatjana Ebert"  # First Author - note the thanks message displayed as an italic footnote of first page.
+#Ref1: "Some Institution, Cape Town, South Africa" # First Author's Affiliation
+#Email1: "nfkatzke\\@gmail.com" # First Author's Email address
+
+#Author2: "John Smith"
+#Ref2: "Some other Institution, Cape Town, South Africa"
+#Email2: "John\\@gmail.com"
+#CommonAffiliation_12: TRUE # If Author 1 and 2 have a common affiliation. Works with _13, _23, etc.
+
+#Author3: "John Doe"
+#Email3: "Joe\\@gmail.com"
+
+#CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+#keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+#Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+#abstract: |
+#  Abstract to be written here. The abstract should not be too long and should provide the reader with a good understanding what you are writing about. Academic papers are not like novels where you keep the reader in suspense. To be effective in getting others to read your paper, be as open and concise about your findings here as possible. Ideally, upon reading your abstract, the reader should feel he / she must read your paper in entirety.
+---
+
+<!-- First: Set your default preferences for chunk options: -->
+
+<!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+# Note: Include = FALSE implies the code is executed, but not printed in your pdf.
+# warning and message = FALSE implies ugly messages and warnings are removed from your pdf.
+# These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
+
+# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+Example_data <- Texevier::Ex_Dat
+
+# Notice that as you are working in a .Rproj file (I am assuming you are) - the relative paths of your directories start at your specified root.
+# This means that when working in a .Rproj file, you never need to use getwd() - it is assumed as your base root automatically.
+#write_rds(Example_data, path = "data/Example_data.rds")
+
+```
+
+<!-- ############################## -->
+
+<!-- # Start Writing here: -->
+
+<!-- ############################## -->
+
+# Introduction
+
+This report analyses household loan default patterns using anonymised Lending Club data. The objective is to identify key predictors of loan default, evaluate Lending Club's grading system, assess whether Texas differs from other US states, and test the Director's existing assumptions about default risk.
+
+The main outcome variable is based on `loan_status`. Loans classified as `Fully Paid` are treated as successful repayments, while loans classified as `Charged Off` or `Default` are treated as written off as a loss. Loans listed as `Current` are excluded from the main default analysis because their final outcome is not yet known.
+
+# Data and Cleaning
+
+```{r loan packages, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(broom)
+library(pROC)
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r load-data}
+loan_credit <- readRDS("C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_3_Loans/data/Loan_Cred/loan_data.rds")
+
+
+loan_credit <- loan_credit %>%
+  select(where(~ !all(is.na(.))))
+
+df <- loan_credit %>%
+  mutate(
+    loan_status_binary = case_when(
+      loan_status == "Fully Paid" ~ 0,
+      loan_status %in% c("Charged Off", "Default") ~ 1,
+      TRUE ~ NA_real_
+    ),
+    int_rate = as.numeric(gsub("%", "", int_rate)),
+    revol_util = as.numeric(gsub("%", "", revol_util)),
+    term = trimws(term),
+    short_term = ifelse(term == "36 months", 1, 0),
+    emp_10plus = ifelse(emp_length == "10+ years", 1, 0),
+    homeowner = ifelse(home_ownership %in% c("MORTGAGE", "OWN"), 1, 0),
+    texas = ifelse(addr_state == "TX", 1, 0)
+  ) %>%
+  filter(!is.na(loan_status_binary))
+```
+
+```{r summary-table}
+summary_table <- df %>%
+  summarise(
+    observations = n(),
+    default_rate = mean(loan_status_binary, na.rm = TRUE),
+    avg_loan_amount = mean(loan_amnt, na.rm = TRUE),
+    avg_interest_rate = mean(int_rate, na.rm = TRUE),
+    avg_dti = mean(dti, na.rm = TRUE)
+  )
+
+kable(summary_table, digits = 3, caption = "Summary statistics for cleaned Lending Club data")
+```
+
+# Exploratory Analysis
+
+Default rates differ substantially across borrower characteristics. The first important comparison is by credit grade.
+
+```{r grade-table}
+grade_table <- df %>%
+  group_by(grade) %>%
+  summarise(
+    default_rate = mean(loan_status_binary, na.rm = TRUE),
+    n = n()
+  ) %>%
+  arrange(grade)
+
+kable(grade_table, digits = 3, caption = "Default rates by Lending Club credit grade")
+```
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_3_Loans/graphs/Grade.png}
+\caption{Default rates by credit grade}
+\end{figure}
+
+
+Debt-to-income ratios are also central to the analysis because they measure the borrower's repayment burden relative to income.
+
+```{r dti-table}
+dti_table <- df %>%
+  mutate(dti_band = cut(dti, breaks = seq(0, 60, 5), include.lowest = TRUE)) %>%
+  group_by(dti_band) %>%
+  summarise(
+    default_rate = mean(loan_status_binary, na.rm = TRUE),
+    n = n()
+  ) %>%
+  filter(!is.na(dti_band))
+
+kable(dti_table, digits = 3, caption = "Default rates by DTI band")
+```
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_3_Loans/graphs/cap_dti.png}
+\caption{Default rates by DTI cap}
+\end{figure}
+
+
+
+# Testing the Institute's Heuristics
+
+## Homeowners and Long Employment
+
+The first belief is that homeowners and borrowers employed for more than ten years have a much lower default probability on short-term loans. Short-term loans are defined as 36-month loans.
+
+```{r homeowners-table}
+homeowner_table <- df %>%
+  filter(short_term == 1) %>%
+  group_by(homeowner, emp_10plus) %>%
+  summarise(
+    default_rate = mean(loan_status_binary, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  )
+
+kable(homeowner_table, digits = 3, caption = "Default rates for short-term loans by home ownership and employment length")
+```
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{C:/Users/Tatjana/Desktop/Stellenbosch/Uni/Kurse/Data Science/Data Part A/Exam/31074774/Question_3_Loans/graphs/homeowners.png}
+\caption{Short-term default rates by home ownership and employment length}
+\end{figure}
+
+```
+
+This comparison shows whether the Institute's belief is supported in the raw data. However, raw differences may be misleading because homeowners and long-employed borrowers may also differ in credit grade, income and DTI.
+
+## State Differences
+
+The second belief is that US states differ significantly in their culture of defaulting on short-term loans. The table below compares state-level default rates among states with sufficient observations.
+
+```{r state-table}
+state_table <- df %>%
+  filter(short_term == 1) %>%
+  group_by(addr_state) %>%
+  summarise(
+    default_rate = mean(loan_status_binary, na.rm = TRUE),
+    n = n()
+  ) %>%
+  filter(n >= 100) %>%
+  arrange(desc(default_rate))
+
+kable(head(state_table, 15), digits = 3, caption = "Highest short-term default rates by state")
+```
+
+Texas is examined separately because the Director is based in Texas.
+
+```{r texas-table}
+texas_table <- df %>%
+  group_by(texas) %>%
+  summarise(
+    default_rate = mean(loan_status_binary, na.rm = TRUE),
+    n = n()
+  )
+
+kable(texas_table, digits = 3, caption = "Default rate in Texas versus other states")
+```
+
+## Age and Occupation
+
+The dataset does not contain a direct borrower age variable. Therefore, the claim that credit grades predict whether younger individuals default cannot be tested directly. Similarly, if occupation is absent from the dataset, interest-rate determination by occupation cannot be evaluated directly. This is an important data limitation.
+
+# Econometric Model
+
+A logistic regression is appropriate because the dependent variable is binary: default or no default.
+
+```{r logistic-model}
+model_default <- glm(
+  loan_status_binary ~ grade + term + int_rate + dti +
+    annual_inc + home_ownership + emp_length + purpose +
+    addr_state + delinq_2yrs + inq_last_6mths + revol_util,
+  data = df,
+  family = binomial
+)
+
+model_table <- tidy(model_default) %>%
+  mutate(odds_ratio = exp(estimate)) %>%
+  select(term, estimate, odds_ratio, p.value)
+
+kable(head(model_table, 30), digits = 3, caption = "Logistic regression results for default probability")
+```
+
+The model estimates how borrower characteristics are associated with the probability of default. Coefficients above zero increase default risk, while coefficients below zero reduce default risk. Odds ratios above one indicate higher default odds.
+
+# Model Performance
+
+```{r model-performance}
+model_data <- model.frame(model_default)
+
+model_data$predicted_default_probability <- predict(model_default, type = "response")
+
+roc_obj <- roc(
+  model_data$loan_status_binary,
+  model_data$predicted_default_probability
+)
+
+auc_value <- auc(roc_obj)
+
+auc_table <- data.frame(
+  AUC = as.numeric(auc_value)
+)
+
+kable(auc_table, digits = 3, caption = "Model AUC")
+```
+
+
+The AUC measures the model's ability to distinguish between defaulted and fully paid loans. An AUC of 0.5 indicates no predictive power, while values closer to 1 indicate stronger classification performance.
+
+# DTI Hard-Cap Recommendation
+
+A hard cap on DTI can reduce risk by excluding borrowers whose debt burden is too high relative to income. The appropriate cap depends on the lender's default tolerance.
+
+```{r dti-policy-table}
+dti_policy <- df %>%
+  mutate(dti_band = cut(dti, breaks = seq(0, 60, 5), include.lowest = TRUE)) %>%
+  group_by(dti_band) %>%
+  summarise(
+    default_rate = mean(loan_status_binary, na.rm = TRUE),
+    n = n()
+  ) %>%
+  filter(!is.na(dti_band))
+
+kable(dti_policy, digits = 3, caption = "DTI bands and associated default rates")
+```
+
+Based on this table, a conservative lender should choose a lower DTI cap, while a lender with greater risk tolerance may accept higher DTI levels. A reasonable policy structure is:
+
+- Low default tolerance: DTI cap around 20 to 25.
+- Moderate default tolerance: DTI cap around 30.
+- High default tolerance: DTI cap around 35 to 40.
+
+The exact recommendation should be based on where the observed default rate begins to rise sharply in the DTI table and graph.
+
+# Texas Compared with Other States
+
+```{r texas-model}
+model_texas <- glm(
+  loan_status_binary ~ texas + grade + dti + int_rate + term + annual_inc,
+  data = df,
+  family = binomial
+)
+
+texas_model_table <- tidy(model_texas) %>%
+  mutate(odds_ratio = exp(estimate))
+
+kable(texas_model_table, digits = 3, caption = "Controlled regression test for Texas effect")
+```
+
+If the Texas coefficient is statistically significant after controlling for borrower risk characteristics, then Texas appears different from other states. If it is not significant, then any raw Texas difference is likely explained by borrower composition rather than a distinct default culture.
+
+# Discussion
+
+The key risk drivers expected from this analysis are credit grade, interest rate, DTI, loan term, annual income, delinquencies and recent credit inquiries. Borrowers with weaker credit grades, higher DTI, higher interest rates and longer loan terms are expected to show higher default probabilities.
+
+Lending Club's grading system is useful if default rates increase consistently from grade A to lower grades. However, the grading system should not be used alone. It should be combined with DTI, income, loan purpose, term and prior credit behaviour.
+
+# Conclusion
+
+The analysis provides evidence on which borrower characteristics are most strongly associated with loan default. The most relevant risk indicators are expected to be credit grade, DTI, interest rate and loan term. A DTI cap can help reduce default risk, but the appropriate threshold depends on the lender's tolerance for defaults. Texas should be evaluated using both raw default rates and controlled regression results.
+
+The Institute's heuristics are only partly testable. The homeowner and employment-length claim can be tested among short-term loans. State differences can be examined both descriptively and with controls. However, the claim about younger borrowers cannot be tested directly because the dataset does not contain borrower age.
+
+<!-- Make title of bibliography here: -->
+<!-- \newpage -->
+
