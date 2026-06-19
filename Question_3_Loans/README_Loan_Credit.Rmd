@@ -1,0 +1,191 @@
+---
+title: "Question 3: Loans and Credit"
+subtitle: "Data Science Practical Project 2026"
+author: "Student Number: 31074774"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    theme: readable
+---
+
+# Overview
+
+This project analyses household credit and loan default trends using anonymised Lending Club loan data.
+
+The purpose of the analysis is to assist the Director of the Credit Institute in Texas in understanding which borrower and loan characteristics are associated with default risk. The project also evaluates several commonly held lending beliefs, including whether credit grades sort risk effectively, whether homeowners and long-tenured employees are safer borrowers, whether states differ in default behaviour, and whether Texas is meaningfully different from the rest of the United States.
+
+The workflow follows a functional programming approach. Each section of the analysis is written as a separate script containing reusable functions. These functions return cleaned data, summary tables, plots, logistic regression models, odds-ratio tables, or model performance measures.
+
+# Folder Structure
+
+```{r, eval = FALSE}
+Question_3_Loans_Credit
+
+├── code
+│   ├── 01_Data_Reading_Cleaning.R
+│   ├── 02_Default_Overview.R
+│   ├── 03_DTI_Analysis.R
+│   ├── 04_Homeowner_Employment_Analysis.R
+│   ├── 05_State_Texas_Analysis.R
+│   └── 06_Default_Model.R
+│
+├── report
+│   └── Loan_Credit_Report.Rmd
+│
+├── figures
+│
+└── README.Rmd
+```
+
+# Data Preparation
+
+The first script loads the necessary packages and reads the Lending Club loan dataset.
+
+The main outcome variable is converted into a binary default indicator:
+
+- `Fully Paid` is coded as `0`.
+- `Charged Off` and `Default` are coded as `1`.
+- Other loan statuses are treated as incomplete outcomes and excluded from the main default analysis.
+
+Current loans are excluded because their final repayment outcome is not yet known.
+
+Additional variables are cleaned and created for analysis:
+
+- `int_rate`
+- `revol_util`
+- `term`
+- `short_term`
+- `emp_10plus`
+- `homeowner`
+
+These variables allow the analysis to compare loan terms, borrower stability, repayment risk and credit characteristics.
+
+# Default Overview
+
+This section gives a first descriptive view of default rates across Lending Club's credit classifications.
+
+Functions:
+
+- `Default_By_Grade_Table()`
+- `Grade_Default_Plot()`
+- `Default_By_Subgrade_Table()`
+- `Subgrade_Default_Plot()`
+- `Default_By_Term_Table()`
+
+The main objective is to evaluate whether Lending Club credit grades and sub-grades provide a clear ordering of risk. If grades are useful, default rates should increase as borrowers move from safer to riskier grades.
+
+The term-level summary is also used to compare short-term and longer-term loans.
+
+# DTI Analysis
+
+This section investigates the relationship between debt-to-income ratios and default risk.
+
+Functions:
+
+- `DTI_Default_Table()`
+- `DTI_Default_Plot()`
+- `DTI_Cap_Recommendation()`
+
+The DTI variable is grouped into bands of five percentage points. Default rates are then calculated for each band to identify where borrower risk begins to rise more sharply.
+
+The DTI recommendation function provides three suggested hard-cap ranges:
+
+- Low default tolerance: DTI around `20-25`
+- Medium default tolerance: DTI around `30`
+- High default tolerance: DTI around `35-40`
+
+These thresholds are intended as practical lending guidelines rather than strict universal rules.
+
+# Home Ownership and Employment Analysis
+
+This section tests the belief that homeowners and borrowers employed for more than ten years have a much lower probability of default on short-term loans.
+
+Functions:
+
+- `Short_Term_Profile_Table()`
+- `Short_Term_Profile_Plot()`
+- `Short_Term_Logit()`
+- `Short_Term_Odds_Table()`
+
+The descriptive table and plot compare short-term default rates across four borrower groups:
+
+- Homeowners with 10+ years of employment
+- Homeowners with less than 10 years of employment
+- Non-homeowners with 10+ years of employment
+- Non-homeowners with less than 10 years of employment
+
+The logistic regression then controls for additional borrower characteristics, including credit grade, DTI and annual income.
+
+# State and Texas Analysis
+
+This section explores whether default rates differ significantly across US states and whether Texas differs from the rest of the country.
+
+Functions:
+
+- `State_Default_Table()`
+- `State_Default_Plot()`
+- `State_Logit()`
+- `Texas_Default_Table()`
+- `Texas_Default_Plot()`
+- `Texas_Logit()`
+- `Texas_Odds_Table()`
+
+The raw state-level analysis ranks states by default rate, subject to a minimum number of observed loans. The Texas-specific analysis compares Texas to all other US states, both descriptively and through a logistic regression model that controls for borrower and loan characteristics.
+
+# Default Model
+
+This section builds a broader default prediction model using logistic regression.
+
+Functions:
+
+- `Default_Logit()`
+- `Default_Odds_Table()`
+- `Default_Model_AUC()`
+- `Default_ROC_Plot()`
+
+The default model includes:
+
+- credit grade
+- loan term
+- interest rate
+- DTI
+- annual income
+- home ownership
+- employment length
+- loan purpose
+- state
+- delinquencies
+- recent credit inquiries
+- revolving utilisation
+
+The odds-ratio table is used to interpret which borrower characteristics increase or decrease default risk. The AUC statistic and ROC curve are used to evaluate how well the model separates defaulters from non-defaulters.
+
+# Reproducibility
+
+The analysis can be reproduced by sourcing the scripts in order:
+
+```{r, eval = FALSE}
+source("code/01_Data_Reading_Cleaning.R")
+source("code/02_Default_Overview.R")
+source("code/03_DTI_Analysis.R")
+source("code/04_Homeowner_Employment_Analysis.R")
+source("code/05_State_Texas_Analysis.R")
+source("code/06_Default_Model.R")
+```
+
+After sourcing the scripts, the main cleaned dataset is stored as `df`, and the functions can be called directly in the report to generate tables and figures.
+
+# Packages Used
+
+- tidyverse
+- lubridate
+- broom
+- pROC
+- scales
+
+# Summary
+
+This project studies default risk in Lending Club loans using a combination of descriptive statistics, visualisation and logistic regression. The analysis evaluates whether borrower characteristics, Lending Club grades, debt-to-income levels, state location and Texas-specific effects help explain loan default outcomes.
+
+The final report should use the generated figures and tables to provide concise recommendations to the Director of the Credit Institute, with particular attention to credit grading, DTI caps, borrower screening and the reliability of common lending heuristics.
