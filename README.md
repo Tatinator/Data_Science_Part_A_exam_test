@@ -1,0 +1,679 @@
+# Purpose
+
+This repository contains my solution to the Stellenbosch University
+Economics Department Data Science Practical Project 2026.
+
+The project is split into four standalone questions:
+
+1.  Coffee Hub
+2.  Baby Names
+3.  Loans and Credit
+4.  Netflix
+
+Each question has its own folder, code scripts, report material and
+question-specific README. The root README collates the full project and
+shows how the separate analyses are loaded, structured and reproduced.
+
+The main purpose of this README is not to repeat the full reports, but
+to show the workflow, source the functions, display representative
+figures and tables, and explain briefly what each question does.
+
+The workflow follows the same logic throughout:
+
+- keep each question in its own folder;
+- build reusable functions in the relevant `code` folder;
+- source those functions from the root README;
+- use those functions to generate figures and tables;
+- summarise the key results clearly and concisely.
+
+# Project Structure
+
+``` r
+Project
+
+├── Question_1_Coffee_Hub
+│   ├── code
+│   │   ├── 01_Data_Reading_Cleaning.R
+│   │   ├── 02_Country_Origin_Analysis.R
+│   │   ├── 03_Roaster_Analysis.R
+│   │   └── 04_Roast_Analysis.R
+│   ├── report
+│   ├── figures
+│   └── README.Rmd
+│
+├── Question_2_Baby_Names
+│   ├── code
+│   │   ├── 01_Data_Reading_Cleaning.R
+│   │   ├── 02_Persistence_Analysis.R
+│   │   ├── 03_Spike_Analysis.R
+│   │   ├── 04_Media_Matching.R
+│   │   ├── 05_Decade_Analysis.R
+│   │   └── 06_NY_Toy_Name_Analysis.R
+│   ├── report
+│   ├── figures
+│   └── README.Rmd
+│
+├── Question_3_Loans_Credit
+│   ├── code
+│   │   ├── 01_Data_Reading_Cleaning.R
+│   │   ├── 02_Default_Overview.R
+│   │   ├── 03_DTI_Analysis.R
+│   │   ├── 04_Homeowner_Employment_Analysis.R
+│   │   ├── 05_State_Texas_Analysis.R
+│   │   └── 06_Default_Model.R
+│   ├── report
+│   ├── figures
+│   └── README.Rmd
+│
+├── Question_4_Netflix
+│   ├── code
+│   │   ├── 01_Data_Reading_Cleaning.R
+│   │   ├── 02_Country_Analysis.R
+│   │   ├── 03_Runtime_Analysis.R
+│   │   ├── 04_Genre_Analysis.R
+│   │   ├── 05_Text_Analysis.R
+│   │   ├── 06_Director_Analysis.R
+│   │   └── 07_HBO_Comparison.R
+│   └── README.Rmd
+│
+└── README.Rmd
+```
+
+# How to get started
+
+The code below loads the main packages used across the project.
+
+``` r
+gc()
+```
+
+    ##           used (Mb) gc trigger (Mb) max used (Mb)
+    ## Ncells  564753 30.2    1261657 67.4   703845 37.6
+    ## Vcells 1071609  8.2    8388608 64.0  1932001 14.8
+
+``` r
+library(pacman)
+
+p_load(
+  tidyverse,
+  lubridate,
+  broom,
+  scales,
+  stringr,
+  purrr,
+  tidytext,
+  ggrepel,
+  pROC,
+  wordcloud,
+  RColorBrewer
+)
+```
+
+The functional programming structure means that the root README can
+source all scripts from each question folder.
+
+``` r
+list.files("Question_1_Coffee_Hub/code/", full.names = TRUE, recursive = TRUE) %>%
+  as.list() %>%
+  walk(~ source(.))
+
+list.files("Question_2_Baby_Names/code/", full.names = TRUE, recursive = TRUE) %>%
+  as.list() %>%
+  walk(~ source(.))
+
+list.files("Question_3_Loans_Credit/code/", full.names = TRUE, recursive = TRUE) %>%
+  as.list() %>%
+  walk(~ source(.))
+
+list.files("Question_4_Netflix/code/", full.names = TRUE, recursive = TRUE) %>%
+  as.list() %>%
+  walk(~ source(.))
+```
+
+# Question 1: Coffee Hub
+
+## Overview
+
+This question analyses a coffee review database for a prospective
+entrepreneur who wants to stock premium coffees in the Neelsie.
+
+The aim is to identify coffee origins, roasters and roast types that
+offer a strong combination of:
+
+- expert rating;
+- cost-efficiency;
+- student appeal;
+- supplier availability.
+
+The analysis uses the supplied `Coffee.csv` file. The three review
+description fields are combined into a single `Review` variable. A
+`StudentMatch` score is then calculated by counting student-friendly
+flavour words in the review text. A `ValueScore` is calculated as rating
+divided by cost per 100g.
+
+## Code used for figures and tables
+
+``` r
+source("Question_1_Coffee_Hub/code/01_Data_Reading_Cleaning.R")
+source("Question_1_Coffee_Hub/code/02_Country_Origin_Analysis.R")
+source("Question_1_Coffee_Hub/code/03_Roaster_Analysis.R")
+source("Question_1_Coffee_Hub/code/04_Roast_Analysis.R")
+```
+
+## Coffee Origins
+
+The origin analysis reshapes the origin fields into a longer format so
+that coffees with more than one origin can be counted properly.
+
+Origins are summarised by:
+
+- average rating;
+- average cost;
+- average student match;
+- number of coffees.
+
+The plot below is intended to identify origins that are high quality,
+affordable and aligned with student preferences.
+
+``` r
+Origin_Summary() %>%
+  ggplot(
+    aes(
+      x = Avg_Cost,
+      y = Avg_Rating,
+      size = N,
+      colour = Student_Match
+    )
+  ) +
+  geom_point(alpha = 0.8)
+```
+
+![](Question_1_Coffee_Hub/figures/Coffee_Origin_Bubble.png)
+
+## Roaster Analysis
+
+Roasters are summarised by average rating, average student match,
+average cost and number of coffees. Only roasters with enough
+observations are kept in the main ranking to avoid over-interpreting
+very small groups.
+
+``` r
+Roaster_Summary() %>%
+  arrange(desc(Avg_Rating)) %>%
+  head(10)
+```
+
+| Roaster             | Avg Rating | Avg Cost | Student Match | Number of Coffees |
+|:-------------------|-----------:|---------:|-------------:|-----------------:|
+| Replace with output |       XX.X |     XX.X |          XX.X |                XX |
+| Replace with output |       XX.X |     XX.X |          XX.X |                XX |
+| Replace with output |       XX.X |     XX.X |          XX.X |                XX |
+
+## Roast Type Analysis
+
+Roast types are compared using average rating, student match and average
+cost.
+
+``` r
+Roast_Performance_Plot()
+```
+
+![](Question_1_Coffee_Hub/figures/Roast_Performance.png)
+
+The combined view of quality, cost and student preference helps
+determine which roast strengths are likely to be most suitable for the
+local student market.
+
+# Question 2: Baby Names
+
+## Overview
+
+This question investigates baby naming trends in the United States and
+provides recommendations to a New York toy design company.
+
+The analysis combines:
+
+- US Baby Names by State;
+- Billboard Top 100 Charts;
+- HBO Titles;
+- HBO Credits.
+
+The objective is to understand whether popular names persist through
+time, whether sudden naming spikes can be linked to popular culture, and
+which names may be suitable for a toy brand.
+
+## Code used for figures and tables
+
+``` r
+source("Question_2_Baby_Names/code/01_Data_Reading_Cleaning.R")
+source("Question_2_Baby_Names/code/02_Persistence_Analysis.R")
+source("Question_2_Baby_Names/code/03_Spike_Analysis.R")
+source("Question_2_Baby_Names/code/04_Media_Matching.R")
+source("Question_2_Baby_Names/code/05_Decade_Analysis.R")
+source("Question_2_Baby_Names/code/06_NY_Toy_Name_Analysis.R")
+```
+
+## Do popular names persist?
+
+National baby-name counts are aggregated by year, gender and name. The
+top 25 names are identified for every year, and Spearman rank
+correlations are calculated between rankings one, two and three years
+into the future.
+
+The analysis also compares persistence before and after 1990.
+
+``` r
+Persistence_Before_After_Table()
+```
+
+``` r
+Persistence_Before_After_Plot()
+```
+
+![](Question_2_Baby_Names/figures/Name_Persistence.png)
+
+## Name Spikes
+
+To identify sudden popularity changes, year-on-year relative growth and
+absolute changes are calculated for each name and gender combination.
+
+Both spike measures are useful:
+
+- relative spikes highlight names that grow very quickly from a small
+  base;
+- absolute spikes highlight names with large increases in the number of
+  babies.
+
+``` r
+Top_Relative_Spikes()
+Top_Absolute_Spikes()
+```
+
+| Name                | Gender | Year | Increase |
+|:--------------------|:-------|-----:|---------:|
+| Replace with output | F      | XXXX |      XXX |
+| Replace with output | M      | XXXX |      XXX |
+| Replace with output | F      | XXXX |      XXX |
+
+``` r
+Relative_Spike_Plot()
+Absolute_Spike_Plot()
+Selected_Name_Plot("Whitney")
+```
+
+![](Question_2_Baby_Names/figures/Name_Spikes.png)
+
+## Popular Culture and Naming Trends
+
+First names are extracted from HBO actor names, HBO character names and
+Billboard artists. These names are matched against large naming spikes
+to identify possible cultural links.
+
+``` r
+Actor_Matches()
+Character_Matches()
+Billboard_Artist_Matches()
+```
+
+This section is exploratory and is used to identify interesting examples
+rather than to claim strict causality.
+
+## Long-Term Naming Trends
+
+Decade-level summaries provide a broader view of naming fashion across
+generations.
+
+``` r
+Top_Decade_Names()
+Top_Decade_Names_Plot()
+Decade_Heatmap_Plot()
+```
+
+![](Question_2_Baby_Names/figures/Decade_Heatmap.png)
+
+## Toy Name Recommendations for New York
+
+The New York recommendation section creates a `Toy Name Score` using:
+
+- long-term stability;
+- overall popularity;
+- volatility penalties.
+
+``` r
+Toy_Name_Scores_NY()
+Toy_Name_Score_Plot()
+Fad_Names_NY()
+Fad_Risk_Plot_NY()
+```
+
+| Name                | Toy Name Score | Fad Risk |
+|:--------------------|---------------:|---------:|
+| Replace with output |           XX.X |     XX.X |
+| Replace with output |           XX.X |     XX.X |
+| Replace with output |           XX.X |     XX.X |
+
+# Question 3: Loans and Credit
+
+## Overview
+
+This question analyses anonymised Lending Club loan data to study
+household credit and loan default trends.
+
+The purpose is to assist the Director of the Credit Institute in Texas
+in understanding:
+
+- which borrower and loan characteristics are associated with default
+  risk;
+- whether Lending Club grades sort risk effectively;
+- whether homeowners and long-tenured employees are safer borrowers;
+- whether states differ in default behaviour;
+- whether Texas differs meaningfully from the rest of the United States.
+
+## Code used for figures and tables
+
+``` r
+source("Question_3_Loans_Credit/code/01_Data_Reading_Cleaning.R")
+source("Question_3_Loans_Credit/code/02_Default_Overview.R")
+source("Question_3_Loans_Credit/code/03_DTI_Analysis.R")
+source("Question_3_Loans_Credit/code/04_Homeowner_Employment_Analysis.R")
+source("Question_3_Loans_Credit/code/05_State_Texas_Analysis.R")
+source("Question_3_Loans_Credit/code/06_Default_Model.R")
+```
+
+## Data Preparation
+
+The main outcome variable is converted into a binary default indicator:
+
+- `Fully Paid` is coded as `0`;
+- `Charged Off` and `Default` are coded as `1`;
+- incomplete outcomes such as current loans are excluded.
+
+Additional variables are cleaned and created:
+
+- `int_rate`;
+- `revol_util`;
+- `term`;
+- `short_term`;
+- `emp_10plus`;
+- `homeowner`.
+
+## Default Overview
+
+The first part of the analysis evaluates whether Lending Club grades and
+sub-grades provide a clear ordering of risk.
+
+``` r
+Default_By_Grade_Table()
+Grade_Default_Plot()
+Default_By_Subgrade_Table()
+Subgrade_Default_Plot()
+Default_By_Term_Table()
+```
+
+![](Question_3_Loans_Credit/figures/Default_By_Grade.png)
+
+## DTI Analysis
+
+Debt-to-income ratios are grouped into five percentage point bands, and
+default rates are calculated for each band.
+
+``` r
+DTI_Default_Table()
+DTI_Default_Plot()
+DTI_Cap_Recommendation()
+```
+
+![](Question_3_Loans_Credit/figures/DTI_Default.png)
+
+The DTI recommendation function provides three suggested hard-cap
+ranges:
+
+| Default Tolerance | Suggested DTI Cap |
+|:------------------|:------------------|
+| Low tolerance     | 20-25             |
+| Medium tolerance  | Around 30         |
+| High tolerance    | 35-40             |
+
+These thresholds are practical lending guidelines rather than strict
+universal rules.
+
+## Home Ownership and Employment
+
+The analysis tests whether homeowners and borrowers employed for more
+than ten years have lower default risk on short-term loans.
+
+``` r
+Short_Term_Profile_Table()
+Short_Term_Profile_Plot()
+Short_Term_Logit()
+Short_Term_Odds_Table()
+```
+
+## State and Texas Analysis
+
+State-level analysis ranks states by default rate, subject to a minimum
+number of observed loans. Texas is then compared to all other US states
+descriptively and through a logistic regression model.
+
+``` r
+State_Default_Table()
+State_Default_Plot()
+State_Logit()
+Texas_Default_Table()
+Texas_Default_Plot()
+Texas_Logit()
+Texas_Odds_Table()
+```
+
+![](Question_3_Loans_Credit/figures/Texas_Default.png)
+
+## Default Model
+
+The broader default model includes:
+
+- credit grade;
+- loan term;
+- interest rate;
+- DTI;
+- annual income;
+- home ownership;
+- employment length;
+- loan purpose;
+- state;
+- delinquencies;
+- recent credit inquiries;
+- revolving utilisation.
+
+``` r
+Default_Logit()
+Default_Odds_Table()
+Default_Model_AUC()
+Default_ROC_Plot()
+```
+
+![](Question_3_Loans_Credit/figures/Default_ROC.png)
+
+| Variable            | Odds Ratio | Interpretation              |
+|:--------------------|-----------:|:----------------------------|
+| Replace with output |       X.XX | Higher / lower default risk |
+| Replace with output |       X.XX | Higher / lower default risk |
+| Replace with output |       X.XX | Higher / lower default risk |
+
+# Question 4: Netflix
+
+## Overview
+
+This question investigates the composition of Netflix’s movie catalogue
+and explores differences in content strategy across countries, genres,
+directors and streaming platforms.
+
+The analysis focuses on:
+
+- IMDb ratings;
+- runtime distributions;
+- textual characteristics of movie descriptions;
+- country representation;
+- Netflix and HBO comparisons.
+
+## Code used for figures and tables
+
+``` r
+source("Question_4_Netflix/code/01_Data_Reading_Cleaning.R")
+source("Question_4_Netflix/code/02_Country_Analysis.R")
+source("Question_4_Netflix/code/03_Runtime_Analysis.R")
+source("Question_4_Netflix/code/04_Genre_Analysis.R")
+source("Question_4_Netflix/code/05_Text_Analysis.R")
+source("Question_4_Netflix/code/06_Director_Analysis.R")
+source("Question_4_Netflix/code/07_HBO_Comparison.R")
+```
+
+## Data Preparation
+
+The cleaning workflow:
+
+- restricts Netflix titles to movies only;
+- restricts analysis to titles released up to 2022;
+- cleans genre and country fields;
+- expands countries and genres into separate observations using
+  `separate_rows()`.
+
+The main helper functions are:
+
+- `Netflix_Country()`;
+- `Netflix_Genre()`;
+- `HBO_Country()`;
+- `HBO_Genre()`.
+
+## Country Analysis
+
+The country analysis identifies the countries most represented on
+Netflix and compares IMDb ratings across countries.
+
+``` r
+Country_Count_Plot()
+Country_Rating_Plot()
+Country_Rating_Table()
+```
+
+![](Question_4_Netflix/figures/Country_Ratings.png)
+
+| Country             | Average Rating | Median Rating | Number of Movies |
+|:--------------------|---------------:|--------------:|-----------------:|
+| Replace with output |           X.XX |          X.XX |              XXX |
+| Replace with output |           X.XX |          X.XX |              XXX |
+| Replace with output |           X.XX |          X.XX |              XXX |
+
+## Runtime Analysis
+
+Runtime analysis studies movie length and the relationship between
+runtime and audience ratings.
+
+``` r
+Runtime_Distribution_Plot()
+Country_Runtime_Plot()
+Runtime_Country_Table()
+Runtime_Rating_Plot()
+Runtime_Correlation()
+```
+
+![](Question_4_Netflix/figures/Runtime_Distribution.png)
+
+## Genre Analysis
+
+The genre section identifies the most common genres and compares IMDb
+ratings across genres.
+
+``` r
+Genre_Count_Plot()
+Genre_Rating_Table()
+Genre_Rating_Plot()
+```
+
+![](Question_4_Netflix/figures/Genre_Ratings.png)
+
+## Text Analysis
+
+Movie descriptions are analysed using text-mining methods.
+
+The aim is to identify common themes across Netflix movies and
+distinctive vocabulary by production country.
+
+``` r
+Description_Words()
+Word_Count_Table()
+Description_Wordcloud()
+Country_TFIDF_Table()
+Country_TFIDF_Plot()
+```
+
+![](Question_4_Netflix/figures/Wordcloud.png)
+
+## Director Analysis
+
+Director analysis focuses on catalogue presence and average IMDb ratings
+for directors with multiple Netflix movies.
+
+``` r
+Director_Data()
+Top_Directors_Plot()
+Director_Rating_Table()
+```
+
+## HBO Comparison
+
+The final section compares Netflix and HBO content strategies.
+
+``` r
+Platform_Genre_Comparison_Table()
+Platform_Genre_Comparison_Plot()
+Platform_Type_Summary()
+Platform_Type_Plot()
+Platform_Country_Comparison_Plot()
+```
+
+![](Question_4_Netflix/figures/Platform_Genre_Comparison.png)
+
+# Summary of Outputs
+
+| Question | Main Data | Main Methods | Main Deliverable |
+|:-----------------|:-----------------|:-----------------|:-----------------|
+| Coffee Hub | Coffee reviews | Text matching, EDA, value scoring | Supplier and roast recommendations |
+| Baby Names | US baby names, Billboard, HBO | Rank correlation, spike detection, media matching | Naming trend and toy-name recommendations |
+| Loans and Credit | Lending Club loans | Default rates, DTI bands, logistic regression | Credit-risk and DTI-cap recommendations |
+| Netflix | Netflix and HBO content | Country, genre, runtime and text analysis | Streaming content strategy insights |
+
+# Reproducibility
+
+Each question can be run independently by sourcing the scripts in its
+own `code` folder.
+
+For example, to reproduce the Loans and Credit analysis:
+
+``` r
+list.files(
+  "Question_3_Loans_Credit/code/",
+  full.names = TRUE,
+  recursive = TRUE
+) %>%
+  as.list() %>%
+  walk(~ source(.))
+```
+
+After sourcing the scripts, the relevant tables and plots can be
+generated by calling the functions listed in each section of this
+README.
+
+The data folder should not be committed to GitHub. The supplied data
+should be stored locally in the appropriate folder structure before
+running the code.
+
+# Final Remarks
+
+This project demonstrates the use of data science methods across four
+different applied settings. The common structure across all questions is
+a functional programming workflow, supported by reproducible scripts,
+concise figures, summary tables and client-focused interpretation.
+
+The root README collates the individual analyses and provides the marker
+with a single place to review the code structure, representative outputs
+and reasoning behind the project.
